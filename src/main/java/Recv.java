@@ -15,6 +15,10 @@ public class Recv {
         /*建立连接和通道*/
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("192.168.145.101");
+        factory.setPort(5672);
+        factory.setUsername("admin");
+        factory.setPassword("admin");
+        factory.setVirtualHost("/");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 

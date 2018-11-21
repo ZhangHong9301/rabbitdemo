@@ -1,17 +1,19 @@
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * 工作队列，即一个生产者对多个消费者
+ * 消息确认、消息持久、公平分发
  * Create by Mr.Zhang
- * on 2018-11-20 16:31
+ * on 2018-11-21 14:43
  */
-public class Send {
-    /*定义队列名字*/
-    private final static String QUEUE_NAME = "hello a";
+public class NewTask {
+    private static final String TASK_QUEUE_NAME = "task_queue";
 
     public static void main(String[] argv) throws IOException, TimeoutException {
         /*创建连接和通道*/
@@ -25,21 +27,23 @@ public class Send {
         Connection connection = factory.newConnection();
 
         Channel channel = connection.createChannel();
+        channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
 
-        /*为通道指明队列*/
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        String message = "";
+        for (int i = 1; i <= 20; i++) {
 
+            String message = i + "...";
 
-
-        for (int i = 0; i <= 10; i++) {
-            message = "Hello World!第 " + i + " 次";
-            /*发布消息*/
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
+            channel.basicPublish("", TASK_QUEUE_NAME,
+                    MessageProperties.PERSISTENT_TEXT_PLAIN,
+                    message.getBytes());
             System.out.println(" [x] Sent '" + message + "'");
-
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        /*关闭连接*/
+
         channel.close();
         connection.close();
     }
