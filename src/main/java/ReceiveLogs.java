@@ -27,7 +27,7 @@ public class ReceiveLogs {
         /*绑定队列到路由器上*/
         channel.queueBind(queueName, EXCHANGE_NAME, "");
 
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        System.out.println(" [2] Waiting for messages. To exit press CTRL+C");
 
         /*开始监听消息*/
         Consumer consumer = new DefaultConsumer(channel) {
