@@ -40,7 +40,7 @@ public class Send {
 
 
         String msg = "商品----------";
-        String routingKey = "goods.add";
+        String routingKey = "order.add";
 
         /*发布消息*/
         channel.basicPublish(EXCHANGE_NAME,routingKey,null,msg.getBytes());

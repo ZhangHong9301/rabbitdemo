@@ -10,9 +10,9 @@ import java.util.concurrent.TimeoutException;
  * Create by Mr.ZXF
  * on 2018-11-23 17:47
  */
-public class Recv1 {
+public class Recv2 {
     private static final String EXCHANGE_NAME = "test_exchange_topic";
-    private static String QUEUE_NAME = "test_queue_topic_1";
+    private static String QUEUE_NAME = "test_queue_topic_2";
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = ConnectionUtils.getConnection();
@@ -23,13 +23,13 @@ public class Recv1 {
 
         channel.queueDeclare(QUEUE_NAME,false,false,false,null);
 
-        String routingKeys[] = {"goods.#","*.add"};
+        String routingKeys[] = {"goods.delete","*.update"};
         for (String routingKey : routingKeys){
 
             channel.queueBind(QUEUE_NAME,EXCHANGE_NAME,routingKey);
         }
 
-        System.out.println(" [1] Waiting for msg");
+        System.out.println(" [2] Waiting for msg");
 
         /*监听消息*/
         Consumer consumer = new DefaultConsumer(channel) {
@@ -37,7 +37,7 @@ public class Recv1 {
             public void handleDelivery(String consumerTag, Envelope envelope,
                                        AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
-                System.out.println(" [1] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+                System.out.println(" [2] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
             }
         };
         channel.basicConsume(QUEUE_NAME, true, consumer);
